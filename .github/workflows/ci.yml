@@ -1,0 +1,32 @@
+name: simple github actions pipeline for CI
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: docker build -t ${{ secrets.AWS_ECR_REPO_NAME }}:${GITHUB_SHA} .
+      - run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+      
+      - name: Login to ECR and push image
+        uses: aws-actions/configure-aws-credentials
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPO_NAME }}
+      - run: docker push ${{ secrets.AWS_ECR_REPO_NAME }}:${GITHUB_SHA}
