@@ -23,7 +23,7 @@ jobs:
           sudo ./aws/install
       
       - name: Login to ECR and push image
-        uses: aws-actions/configure-aws-credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
