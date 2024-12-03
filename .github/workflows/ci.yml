@@ -17,10 +17,6 @@ jobs:
         with:
           node-version: 18
       - run: docker build -t ${{ secrets.AWS_ECR_REPO_NAME }}:${GITHUB_SHA} .
-      - run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
       
       - name: Login to ECR and push image
         uses: aws-actions/configure-aws-credentials@v1
