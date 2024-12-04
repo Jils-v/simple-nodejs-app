@@ -7,4 +7,4 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ var.STACK_NAME }}
+      - run: echo ${{ env.stack_name }}
